@@ -88,45 +88,6 @@ lib/
 └── main.dart                   # Arquivo principal do app
 ```
 
-## 🎯 Funcionalidades Futuras
-
-- [ ] Categorização de despesas
-- [ ] Relatórios mensais/anuais
-- [ ] Backup na nuvem
-- [ ] Modo escuro
-- [ ] Notificações de lembretes
-- [ ] Exportação de dados
-
-## 🤝 Contribuição
-
-Contribuições são sempre bem-vindas! Para contribuir:
-
-1. Fork o projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
-
 ## 📄 Licença
 
 Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
-
-## 👨‍💻 Desenvolvedor
-
-**Flávio Cordis**
-
-- GitHub: [@flcordis](https://github.com/flcordis)
-- LinkedIn: [Flávio Cordis](https://linkedin.com/in/flcordis)
-
-## 📞 Suporte
-
-Se você encontrou um bug ou tem uma sugestão de melhoria, por favor:
-
-1. Verifique se já existe uma [issue](https://github.com/flcordis/fc_despesas/issues) similar
-2. Se não existir, crie uma nova issue com detalhes sobre o problema/sugestão
-
----
-
-⭐ **Se este projeto te ajudou, considere dar uma estrela!** ⭐
-
-*Copyright © 2025 Flávio Cordis. Todos os direitos reservados.*
