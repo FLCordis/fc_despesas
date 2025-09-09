@@ -28,8 +28,8 @@ class ExpensesApp extends StatelessWidget {
       home: MyHomePage(),
       theme: ThemeData(
         primarySwatch: Colors.purple,
-        hintColor: Colors.amber,
-        highlightColor: Colors.green[200],
+        hintColor: Colors.yellow,
+        highlightColor: Colors.green,
         fontFamily: 'Quicksand',
         textTheme: ThemeData.light().textTheme.copyWith(
           titleMedium: TextStyle(
@@ -161,21 +161,23 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   _openTransactionFormModal(BuildContext context) {
-    showModalBottomSheet(
+    showDialog(
       context: context,
       builder: (_) {
-        return TransactionForm(_addTransaction);
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: TransactionForm(_addTransaction),
+        );
       },
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final isLandscape =
-        MediaQuery.of(context).orientation == Orientation.landscape;
-
-    final availableWidth = MediaQuery.of(context).size.width;
-    final adaptativeFont = availableWidth * 0.05;
+    final mediaQuery = MediaQuery.of(context);
+    final isLandscape = mediaQuery.orientation == Orientation.landscape;
 
     final appBar = AppBar(
       title: Text('Despesas Pessoais FC', textScaler: TextScaler.linear(1.0)),
@@ -203,9 +205,9 @@ class _MyHomePageState extends State<MyHomePage> {
     );
 
     final availableHeight =
-        MediaQuery.of(context).size.height -
+        mediaQuery.size.height -
         appBar.preferredSize.height -
-        MediaQuery.of(context).padding.top;
+        mediaQuery.padding.top;
 
     return Scaffold(
       appBar: appBar,
@@ -235,7 +237,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             if (!_showChart || !isLandscape)
               Container(
-                height: availableHeight * 0.7,
+                height: availableHeight * (isLandscape ? 1 : 0.7),
                 child: TransactionList(
                   transactions: _transactions,
                   onRemove: _removeTransaction,
@@ -245,10 +247,12 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: !isLandscape
-          ? FloatingActionButton(
+          ? FloatingActionButton.extended(
               onPressed: () => _openTransactionFormModal(context),
-              backgroundColor: Theme.of(context).hintColor,
-              child: Icon(Icons.add),
+              backgroundColor: Theme.of(context).highlightColor,
+              foregroundColor: Colors.white,
+              label: Text('Adicionar'),
+              icon: Icon(Icons.add),
             )
           : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

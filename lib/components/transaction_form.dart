@@ -26,14 +26,14 @@ class _TransactionFormState extends State<TransactionForm> {
     _valueController.clear();
   }
 
-  _showDatePicker(){
+  _showDatePicker() {
     showDatePicker(
-      context: context, 
-      initialDate: DateTime.now(), 
-      firstDate: DateTime.now().subtract(Duration(days: 360)), 
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now().subtract(Duration(days: 360)),
       lastDate: DateTime.now(),
     ).then((pickedDate) {
-      if(pickedDate == null) {
+      if (pickedDate == null) {
         return;
       }
       setState(() {
@@ -44,43 +44,54 @@ class _TransactionFormState extends State<TransactionForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
+    return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.all(15),
+        padding: EdgeInsets.all(20),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             TextField(
               controller: _titleController,
               textInputAction: TextInputAction.next,
-              decoration: InputDecoration(labelText: 'Título'),
+              decoration: InputDecoration(
+                labelText: 'Título',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
             ),
+            SizedBox(height: 20),
             TextField(
               controller: _valueController,
               keyboardType: TextInputType.numberWithOptions(decimal: true),
               onSubmitted: (_) => _submitForm(),
-              decoration: InputDecoration(labelText: 'Valor (R\$)'),
+              decoration: InputDecoration(
+                labelText: 'Valor (R\$)',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
             ),
-            SizedBox(
-              height: 70,
+            SizedBox(height: 20),
+            Container(
+              height: 60,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Expanded(
                     child: Text(
                       // ignore: unnecessary_null_comparison
-                      _selectedDate == null 
-                      // ignore: dead_code
-                      ? 'Nenhuma data selecionada!' 
-                      : 'Data Selecionada: ${DateFormat('dd/MM/y').format(_selectedDate!)}',
+                      _selectedDate == null
+                          // ignore: dead_code
+                          ? 'Nenhuma data selecionada!'
+                          : 'Data Selecionada: ${DateFormat('dd/MM/y').format(_selectedDate!)}',
                     ),
                   ),
                   TextButton(
                     style: TextButton.styleFrom(
                       foregroundColor: Theme.of(context).primaryColor,
-                      textStyle: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      textStyle: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     onPressed: _showDatePicker,
                     child: Text('Selecionar data'),
@@ -88,14 +99,22 @@ class _TransactionFormState extends State<TransactionForm> {
                 ],
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: _submitForm,
-                  child: Text('Nova Transação'),
+            SizedBox(height: 40),
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                onPressed: _submitForm,
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6),
+                  ),
                 ),
-              ],
+                child: Text(
+                  'Nova Transação',
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
             ),
           ],
         ),
