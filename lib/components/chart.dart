@@ -8,28 +8,29 @@ class Chart extends StatelessWidget {
 
   final List<Transaction> recentTransactions;
 
-  List<Map<String,Object>> get groupedTransactions {
+  List<Map<String, Object>> get groupedTransactions {
     return List.generate(7, (index) {
-
       final weekDay = DateTime.now().subtract(Duration(days: index));
       final dayOfWeek = DateFormat.E().format(weekDay)[0];
 
       double totalSum = 0.0;
       for (var tr in recentTransactions) {
-        if (tr.date.day == weekDay.day && tr.date.month == weekDay.month && tr.date.year == weekDay.year) {
+        if (tr.date.day == weekDay.day &&
+            tr.date.month == weekDay.month &&
+            tr.date.year == weekDay.year) {
           totalSum += tr.value;
         }
       }
 
-      return {
-        'day': dayOfWeek,
-        'value': totalSum,
-      };
+      return {'day': dayOfWeek, 'value': totalSum};
     }).reversed.toList();
   }
 
   double get _weekTotalValue {
-    return groupedTransactions.fold(0.0, (sum, tr) => sum + (tr['value'] as double));
+    return groupedTransactions.fold(
+      0.0,
+      (sum, tr) => sum + (tr['value'] as double),
+    );
   }
 
   @override
@@ -45,10 +46,12 @@ class Chart extends StatelessWidget {
             return Flexible(
               fit: FlexFit.tight,
               child: ChartBar(
-                label: tr['day'].toString(), 
-                value: tr['value'] as double, 
-                percentage: _weekTotalValue == 0 ? 0 : (tr['value'] as double) / _weekTotalValue,
-                ),
+                label: tr['day'].toString(),
+                value: tr['value'] as double,
+                percentage: _weekTotalValue == 0
+                    ? 0
+                    : (tr['value'] as double) / _weekTotalValue,
+              ),
             );
           }).toList(),
         ),

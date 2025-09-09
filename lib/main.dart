@@ -1,5 +1,6 @@
 import 'package:fc_despesas/components/chart.dart';
 import 'package:flutter/material.dart';
+// import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:math';
@@ -14,6 +15,8 @@ class ExpensesApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
     return MaterialApp(
       title: 'Despesas Pessoais FC',
       localizationsDelegates: const [
@@ -21,10 +24,7 @@ class ExpensesApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: const [
-        Locale('pt', 'BR'),
-        Locale('en', 'US'),
-      ],
+      supportedLocales: const [Locale('pt', 'BR'), Locale('en', 'US')],
       home: MyHomePage(),
       theme: ThemeData(
         primarySwatch: Colors.purple,
@@ -44,16 +44,14 @@ class ExpensesApp extends StatelessWidget {
             fontFamily: 'OpenSans',
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: Colors.white
+            color: Colors.white,
           ),
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             foregroundColor: Colors.white,
             backgroundColor: Colors.purple[800],
-            textStyle: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
+            textStyle: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
       ),
@@ -69,7 +67,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final List <Transaction> _transactions = [];
+  final List<Transaction> _transactions = [];
+  bool _showChart = false;
 
   List<Transaction> get _recentTransactions {
     return _transactions.where((tr) {
@@ -111,9 +110,9 @@ class _MyHomePageState extends State<MyHomePage> {
     } catch (e) {
       print('Erro ao abrir URL: $e');
       // Mostra um snackbar para o usuário
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Não foi possível abrir o link')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Não foi possível abrir o link')));
     }
   }
 
@@ -127,7 +126,10 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Despesas Pessoais FC', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              Text(
+                'Despesas Pessoais FC',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
               SizedBox(height: 8),
               Text('Desenvolvido por Flávio Cordis'),
               SizedBox(height: 4),
@@ -163,43 +165,92 @@ class _MyHomePageState extends State<MyHomePage> {
       context: context,
       builder: (_) {
         return TransactionForm(_addTransaction);
-      });
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Despesas Pessoais FC',
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
+    final availableWidth = MediaQuery.of(context).size.width;
+    final adaptativeFont = availableWidth * 0.05;
+
+    final appBar = AppBar(
+      title: Text('Despesas Pessoais FC', textScaler: TextScaler.linear(1.0)),
+      actions: <Widget>[
+        if (isLandscape)
+          IconButton(
+            icon: Icon(_showChart ? Icons.list : Icons.bar_chart_rounded),
+            onPressed: () {
+              setState(() {
+                _showChart = !_showChart;
+              });
+            },
+          ),
+        IconButton(
+          icon: Icon(Icons.add),
+          onPressed: () => _openTransactionFormModal(context),
         ),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.info_outline),
-            onPressed: () => _showInfoDialog(context),
-          ),
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () => _openTransactionFormModal(context),
-          ),
-        ],
-        backgroundColor: Theme.of(context).primaryColor,
-        foregroundColor: Colors.white,
-      ),
+        IconButton(
+          icon: Icon(Icons.info_outline),
+          onPressed: () => _showInfoDialog(context),
+        ),
+      ],
+      backgroundColor: Theme.of(context).primaryColor,
+      foregroundColor: Colors.white,
+    );
+
+    final availableHeight =
+        MediaQuery.of(context).size.height -
+        appBar.preferredSize.height -
+        MediaQuery.of(context).padding.top;
+
+    return Scaffold(
+      appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Chart(recentTransactions: _recentTransactions),
-            TransactionList(transactions: _transactions, onRemove: _removeTransaction),
+            // if (isLandscape)
+            //   Row(
+            //     mainAxisAlignment: MainAxisAlignment.center,
+            //     children: <Widget>[
+            //       Switch(
+            //         value: _showChart,
+            //         onChanged: (value) {
+            //           setState(() {
+            //             _showChart = value;
+            //           });
+            //         },
+            //       ),
+            //       Text('Exibir Gráfico'),
+            //     ],
+            //   ),
+            if (_showChart || !isLandscape)
+              Container(
+                height: availableHeight * (isLandscape ? 0.7 : 0.3),
+                child: Chart(recentTransactions: _recentTransactions),
+              ),
+            if (!_showChart || !isLandscape)
+              Container(
+                height: availableHeight * 0.7,
+                child: TransactionList(
+                  transactions: _transactions,
+                  onRemove: _removeTransaction,
+                ),
+              ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _openTransactionFormModal(context),
-        backgroundColor: Theme.of(context).hintColor,
-        child: Icon(Icons.add),
-      ),
+      floatingActionButton: !isLandscape
+          ? FloatingActionButton(
+              onPressed: () => _openTransactionFormModal(context),
+              backgroundColor: Theme.of(context).hintColor,
+              child: Icon(Icons.add),
+            )
+          : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
