@@ -63,29 +63,32 @@ class Chart extends StatelessWidget {
 
   // Função que agrupa as transações por dia da semana dos últimos 7 dias
   List<Map<String, Object>> _getGroupedTransactions(BuildContext context) {
-    return List.generate(7, (index) {
-          // Calcula a data de cada um dos últimos 7 dias
-          final weekDay = DateTime.now().subtract(Duration(days: index));
+    return List.generate(
+      7,
+      (index) {
+        // Calcula a data de cada um dos últimos 7 dias
+        // index 0 = hoje, index 1 = ontem, index 2 = anteontem, etc.
+        final weekDay = DateTime.now().subtract(Duration(days: index));
 
-          // Pega a inicial do dia baseada na localização
-          final locale = Localizations.localeOf(context);
-          final dayOfWeek = _getDayInitial(weekDay, locale);
+        // Pega a inicial do dia baseada na localização
+        final locale = Localizations.localeOf(context);
+        final dayOfWeek = _getDayInitial(weekDay, locale);
 
-          // Soma todas as transações deste dia específico
-          double totalSum = 0.0;
-          for (var tr in recentTransactions) {
-            // Verifica se a transação é do mesmo dia, mês e ano
-            if (tr.date.day == weekDay.day &&
-                tr.date.month == weekDay.month &&
-                tr.date.year == weekDay.year) {
-              totalSum += tr.value; // Adiciona o valor da transação
-            }
+        // Soma todas as transações deste dia específico
+        double totalSum = 0.0;
+        for (var tr in recentTransactions) {
+          // Verifica se a transação é do mesmo dia, mês e ano
+          if (tr.date.day == weekDay.day &&
+              tr.date.month == weekDay.month &&
+              tr.date.year == weekDay.year) {
+            totalSum += tr.value; // Adiciona o valor da transação
           }
+        }
 
-          // Retorna um mapa com o dia e o valor total
-          return {'day': dayOfWeek, 'value': totalSum};
-        }).reversed
-        .toList(); // Inverte para mostrar do mais antigo para o mais recente
+        // Retorna um mapa com o dia e o valor total
+        return {'day': dayOfWeek, 'value': totalSum};
+      },
+    ); //Dia de hoje, ontem, anteontem e etc, se quiser a ordem inversa, faça .reversed
   }
 
   // Função que calcula o valor total gasto na semana
