@@ -1,60 +1,77 @@
-import 'dart:io';
+// Importações necessárias para o funcionamento do app
+import 'dart:io'; // Para detectar se é iOS ou Android
+import 'dart:math'; // Para gerar IDs aleatórios
 
-import 'package:fc_despesas/components/chart.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-// import 'package:flutter/services.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'dart:math';
-import 'components/transaction_form.dart';
-import 'components/transaction_list.dart';
-import 'models/transaction.dart';
+// Importações do Flutter para interface
+import 'package:flutter/cupertino.dart'; // Componentes do iOS
+import 'package:flutter/material.dart'; // Componentes do Android/Material Design
+import 'package:flutter_localizations/flutter_localizations.dart'; // Para localização em português
 
+// Importações de bibliotecas externas
+import 'package:url_launcher/url_launcher.dart'; // Para abrir links externos
+
+// Importações dos nossos componentes personalizados
+import 'package:fc_despesas/components/chart.dart'; // Gráfico de despesas
+import 'components/transaction_form.dart'; // Formulário para adicionar transações
+import 'components/transaction_list.dart'; // Lista de transações
+import 'models/transaction.dart'; // Modelo de dados da transação
+
+// Função principal que inicia o aplicativo
 void main() => runApp(ExpensesApp());
 
+// Classe principal do aplicativo - define as configurações gerais
 class ExpensesApp extends StatelessWidget {
   const ExpensesApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-
+    // Retorna o MaterialApp que é a base do aplicativo
     return MaterialApp(
-      title: 'Despesas Pessoais FC',
+      title: 'Despesas Pessoais FC', // Nome do aplicativo
+      
+      // Configurações de localização para português brasileiro
       localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate, // Textos padrão em português
+        GlobalWidgetsLocalizations.delegate,  // Widgets em português
+        GlobalCupertinoLocalizations.delegate, // Componentes iOS em português
       ],
-      supportedLocales: const [Locale('pt', 'BR'), Locale('en', 'US')],
-      home: MyHomePage(),
+      supportedLocales: const [Locale('pt', 'BR'), Locale('en', 'US')], // Idiomas suportados
+      
+      home: MyHomePage(), // Tela inicial do aplicativo
+      
+      // Tema visual do aplicativo
       theme: ThemeData(
-        primarySwatch: Colors.purple,
-        hintColor: Colors.yellow,
-        highlightColor: Colors.green,
-        fontFamily: 'Quicksand',
+        primarySwatch: Colors.purple, // Cor principal: roxo
+        hintColor: Colors.yellow,     // Cor de destaque: amarelo
+        highlightColor: Colors.green, // Cor de realce: verde
+        fontFamily: 'Quicksand',      // Fonte padrão do aplicativo
+        
+        // Configuração dos textos
         textTheme: ThemeData.light().textTheme.copyWith(
           titleMedium: TextStyle(
-            fontFamily: 'OpenSans',
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
+            fontFamily: 'OpenSans',     // Fonte para títulos
+            fontSize: 18,               // Tamanho da fonte
+            fontWeight: FontWeight.bold, // Negrito
+            color: Colors.black,        // Cor preta
           ),
         ),
+        
+        // Configuração da barra superior (AppBar)
         appBarTheme: AppBarTheme(
           titleTextStyle: ThemeData.light().textTheme.titleMedium!.copyWith(
             fontFamily: 'OpenSans',
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: Colors.white, // Texto branco na barra superior
           ),
         ),
+        
+        // Configuração dos botões elevados
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            foregroundColor: Colors.white,
-            backgroundColor: Colors.purple[800],
-            textStyle: TextStyle(fontWeight: FontWeight.bold),
+            foregroundColor: Colors.white,    // Texto branco
+            backgroundColor: Colors.purple[800], // Fundo roxo escuro
+            textStyle: TextStyle(fontWeight: FontWeight.bold), // Texto em negrito
           ),
         ),
       ),
@@ -62,6 +79,7 @@ class ExpensesApp extends StatelessWidget {
   }
 }
 
+// Tela principal do aplicativo - StatefulWidget porque o conteúdo muda
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
 
@@ -69,56 +87,71 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
+// Estado da tela principal - aqui ficam os dados e a lógica
 class _MyHomePageState extends State<MyHomePage> {
+  // Lista que armazena todas as transações do usuário
   final List<Transaction> _transactions = [];
+  
+  // Controla se o gráfico está sendo exibido (usado no modo paisagem)
   bool _showChart = false;
 
+  // Getter que retorna apenas as transações dos últimos 7 dias
+  // Usado para mostrar no gráfico apenas dados recentes
   List<Transaction> get _recentTransactions {
     return _transactions.where((tr) {
       return tr.date.isAfter(DateTime.now().subtract(Duration(days: 7)));
     }).toList();
   }
 
+  // Função para adicionar uma nova transação à lista
   _addTransaction(String title, double value, DateTime date) {
+    // Cria uma nova transação com os dados recebidos
     final newTransaction = Transaction(
-      id: Random().nextDouble().toString(),
-      title: title,
-      value: value,
-      date: date,
+      id: Random().nextDouble().toString(), // Gera um ID único aleatório
+      title: title,   // Título da transação (ex: "Almoço")
+      value: value,   // Valor da transação (ex: 25.50)
+      date: date,     // Data da transação
     );
 
+    // setState() avisa o Flutter que algo mudou e a tela precisa ser redesenhada
     setState(() {
-      _transactions.add(newTransaction);
+      _transactions.add(newTransaction); // Adiciona a nova transação à lista
     });
 
-    //Aqui ele fecha a primeira tela, no caso o Modal, melhor que colocar dentro do Modal, por que no arquivo, ele não sabe que ele é um 'modal'.
+    // Fecha o modal do formulário após adicionar a transação
+    // Navigator.pop() remove a tela atual da pilha de navegação
     Navigator.of(context).pop();
   }
 
+  // Função para remover uma transação da lista
   _removeTransaction(String id) {
     setState(() {
+      // Remove a transação que tem o ID correspondente
       _transactions.removeWhere((tr) => tr.id == id);
     });
   }
 
+  // Função para abrir links externos (como o GitHub)
   _launchURL(String url) async {
-    final Uri uri = Uri.parse(url);
+    final Uri uri = Uri.parse(url); // Converte a string em um objeto Uri
     try {
+      // Tenta abrir o link em um aplicativo externo (navegador)
       if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-        // Fallback para modo padrão
+        // Se não conseguir, tenta o modo padrão
         if (!await launchUrl(uri)) {
           throw Exception('Could not launch $url');
         }
       }
     } catch (e) {
       print('Erro ao abrir URL: $e');
-      // Mostra um snackbar para o usuário
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Não foi possível abrir o link')));
+      // Mostra uma mensagem de erro para o usuário na parte inferior da tela
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Não foi possível abrir o link'))
+      );
     }
   }
 
+  // Função que mostra um diálogo com informações sobre o aplicativo
   _showInfoDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -126,25 +159,26 @@ class _MyHomePageState extends State<MyHomePage> {
         return AlertDialog(
           title: Text('Sobre o App'),
           content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min, // Ocupa apenas o espaço necessário
+            crossAxisAlignment: CrossAxisAlignment.start, // Alinha à esquerda
             children: [
               Text(
                 'Despesas Pessoais FC',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
-              SizedBox(height: 8),
+              SizedBox(height: 8), // Espaçamento vertical
               Text('Desenvolvido por Flávio Cordis'),
               SizedBox(height: 4),
+              // Link clicável para o GitHub
               GestureDetector(
                 onTap: () {
-                  _launchURL('http://github.com/flcordis');
+                  _launchURL('http://github.com/flcordis'); // Abre o GitHub
                 },
                 child: Text(
                   'GitHub/FLCordis',
                   style: TextStyle(
-                    color: Colors.blue,
-                    decoration: TextDecoration.underline,
+                    color: Colors.blue,              // Cor azul para indicar link
+                    decoration: TextDecoration.underline, // Sublinhado
                   ),
                 ),
               ),
@@ -153,6 +187,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
           actions: [
+            // Botão para fechar o diálogo
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
               child: Text('Fechar'),
@@ -163,24 +198,27 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  // Função que abre o formulário para adicionar nova transação em um modal
   _openTransactionFormModal(BuildContext context) {
     showDialog(
       context: context,
       builder: (_) {
         return Dialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(16), // Bordas arredondadas
           ),
-          child: TransactionForm(_addTransaction),
+          child: TransactionForm(_addTransaction), // Passa a função de adicionar
         );
       },
     );
   }
 
+  // Função que cria botões adaptativos para iOS e Android
+  // No iOS usa GestureDetector, no Android usa IconButton
   Widget _getIconButton(IconData icon, Function() fn) {
     return Platform.isIOS
-        ? GestureDetector(onTap: fn, child: Icon(icon))
-        : IconButton(icon: Icon(icon), onPressed: fn);
+        ? GestureDetector(onTap: fn, child: Icon(icon))     // iOS: toque simples
+        : IconButton(icon: Icon(icon), onPressed: fn);      // Android: botão material
   }
 
   @override
