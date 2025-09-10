@@ -15,9 +15,11 @@ class TransactionForm extends StatefulWidget {
 class _TransactionFormState extends State<TransactionForm> {
   final _titleController = TextEditingController();
   final _valueController = TextEditingController();
+  final _titleFocusNode = FocusNode();
+  final _valueFocusNode = FocusNode();
   DateTime _selectedDate = DateTime.now();
 
-  _submitForm() {
+  void _submitForm() {
     final title = _titleController.text;
     final value = double.tryParse(_valueController.text) ?? 0.0;
     if (title.isEmpty || value <= 0) {
@@ -26,6 +28,16 @@ class _TransactionFormState extends State<TransactionForm> {
     widget.onAddTransaction(title, value, _selectedDate);
     _titleController.clear();
     _valueController.clear();
+  }
+
+  //Foco do Android nos inputs, ao clicar em Próximo no teclado, ele chama o próximo foco.
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _valueController.dispose();
+    _titleFocusNode.dispose();
+    _valueFocusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -39,13 +51,19 @@ class _TransactionFormState extends State<TransactionForm> {
           children: <Widget>[
             AdaptativeTextField(
               label: 'Título',
-              onSubmit: (_) => _submitForm,
+              controller: _titleController,
+              focusNode: _titleFocusNode,
+              textInputAction: TextInputAction.next,
+              onSubmit: (_) => _valueFocusNode.requestFocus(),
               keyboardType: TextInputType.text,
             ),
             SizedBox(height: 20),
             AdaptativeTextField(
               label: 'Valor (R\$)',
-              onSubmit: (_) => _submitForm,
+              controller: _valueController,
+              focusNode: _valueFocusNode,
+              textInputAction: TextInputAction.done,
+              onSubmit: (_) => _submitForm(),
               keyboardType: TextInputType.number,
             ),
             SizedBox(height: 20),

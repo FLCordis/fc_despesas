@@ -6,12 +6,18 @@ class AdaptativeTextField extends StatelessWidget {
   final String label;
   final Function(String) onSubmit;
   final TextInputType keyboardType;
+  final TextEditingController controller;
+  final TextInputAction textInputAction;
+  final FocusNode? focusNode;
 
   const AdaptativeTextField({
     super.key,
     required this.label,
     required this.onSubmit,
     this.keyboardType = TextInputType.text,
+    required this.controller,
+    required this.textInputAction,
+    this.focusNode,
   });
 
   @override
@@ -20,8 +26,10 @@ class AdaptativeTextField extends StatelessWidget {
         ? Padding(
             padding: const EdgeInsets.only(bottom: 8.0),
             child: CupertinoTextField(
-              controller: TextEditingController(),
+              controller: controller,
+              focusNode: focusNode,
               keyboardType: keyboardType,
+              textInputAction: textInputAction,
               onSubmitted: onSubmit,
               placeholder: label,
               padding: EdgeInsets.symmetric(horizontal: 6, vertical: 12),
@@ -31,8 +39,10 @@ class AdaptativeTextField extends StatelessWidget {
             ),
           )
         : TextField(
-            controller: TextEditingController(),
+            controller: controller,
+            focusNode: focusNode,
             keyboardType: keyboardType,
+            textInputAction: textInputAction,
             onSubmitted: onSubmit,
             decoration: InputDecoration(
               labelText: label,
