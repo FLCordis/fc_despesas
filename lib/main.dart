@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:fc_despesas/components/chart.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -174,44 +177,62 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  Widget _getIconButton(IconData icon, Function() fn) {
+    return Platform.isIOS
+        ? GestureDetector(onTap: fn, child: Icon(icon))
+        : IconButton(icon: Icon(icon), onPressed: fn);
+  }
+
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     final isLandscape = mediaQuery.orientation == Orientation.landscape;
 
-    final appBar = AppBar(
-      title: Text('Despesas Pessoais FC', textScaler: TextScaler.linear(1.0)),
-      actions: <Widget>[
-        if (isLandscape)
-          IconButton(
-            icon: Icon(_showChart ? Icons.list : Icons.bar_chart_rounded),
-            onPressed: () {
-              setState(() {
-                _showChart = !_showChart;
-              });
-            },
-          ),
-        IconButton(
-          icon: Icon(Icons.add),
-          onPressed: () => _openTransactionFormModal(context),
-        ),
-        IconButton(
-          icon: Icon(Icons.info_outline),
-          onPressed: () => _showInfoDialog(context),
-        ),
-      ],
-      backgroundColor: Theme.of(context).primaryColor,
-      foregroundColor: Colors.white,
-    );
+    final iconList = Platform.isIOS ? CupertinoIcons.refresh : Icons.list;
+    final chartList = Platform.isIOS ? CupertinoIcons.refresh : Icons.bar_chart;
+
+    final actions = <Widget>[
+      if (isLandscape)
+        _getIconButton(_showChart ? iconList : chartList, () {
+          setState(() {
+            _showChart = !_showChart;
+          });
+        }),
+      _getIconButton(
+        Platform.isIOS ? CupertinoIcons.add : Icons.add,
+        () => _openTransactionFormModal(context),
+      ),
+      _getIconButton(
+        Platform.isIOS ? CupertinoIcons.info : Icons.info_outline,
+        () => _showInfoDialog(context),
+      ),
+    ];
+
+    final PreferredSizeWidget appBar = Platform.isIOS
+        ? CupertinoNavigationBar(
+            middle: Text(
+              'Despesas Pessoais FC',
+              textScaler: TextScaler.linear(1.0),
+            ),
+            trailing: Row(mainAxisSize: MainAxisSize.min, children: actions),
+          )
+        : AppBar(
+            title: Text(
+              'Despesas Pessoais FC',
+              textScaler: TextScaler.linear(1.0),
+            ),
+            actions: actions,
+            backgroundColor: Theme.of(context).primaryColor,
+            foregroundColor: Colors.white,
+          );
 
     final availableHeight =
         mediaQuery.size.height -
         appBar.preferredSize.height -
         mediaQuery.padding.top;
 
-    return Scaffold(
-      appBar: appBar,
-      body: SingleChildScrollView(
+    final bodyPage = SafeArea(
+      child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
@@ -246,16 +267,30 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      floatingActionButton: !isLandscape
-          ? FloatingActionButton.extended(
-              onPressed: () => _openTransactionFormModal(context),
-              backgroundColor: Theme.of(context).highlightColor,
-              foregroundColor: Colors.white,
-              label: Text('Adicionar'),
-              icon: Icon(Icons.add),
-            )
-          : null,
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
+
+    return Platform.isIOS
+        ? CupertinoPageScaffold(
+            navigationBar: CupertinoNavigationBar(
+              middle: Text('Despesas Pessoais'),
+              trailing: Row(mainAxisSize: MainAxisSize.min, children: actions),
+            ),
+            child: bodyPage,
+          )
+        : Scaffold(
+            appBar: appBar,
+            body: bodyPage,
+            floatingActionButton: !isLandscape
+                ? FloatingActionButton.extended(
+                    onPressed: () => _openTransactionFormModal(context),
+                    backgroundColor: Theme.of(context).highlightColor,
+                    foregroundColor: Colors.white,
+                    label: Text('Adicionar'),
+                    icon: Icon(Icons.add),
+                  )
+                : null,
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerFloat,
+          );
   }
 }

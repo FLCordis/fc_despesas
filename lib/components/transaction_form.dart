@@ -1,5 +1,7 @@
+import 'package:fc_despesas/components/adaptative_button.dart';
+import 'package:fc_despesas/components/adaptative_datepicker.dart';
+import 'package:fc_despesas/components/adaptative_textfield.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class TransactionForm extends StatefulWidget {
   const TransactionForm(this.onAddTransaction, {super.key});
@@ -26,22 +28,6 @@ class _TransactionFormState extends State<TransactionForm> {
     _valueController.clear();
   }
 
-  _showDatePicker() {
-    showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now().subtract(Duration(days: 360)),
-      lastDate: DateTime.now(),
-    ).then((pickedDate) {
-      if (pickedDate == null) {
-        return;
-      }
-      setState(() {
-        _selectedDate = pickedDate;
-      });
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -51,69 +37,33 @@ class _TransactionFormState extends State<TransactionForm> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            TextField(
-              controller: _titleController,
-              textInputAction: TextInputAction.next,
-              decoration: InputDecoration(
-                labelText: 'Título',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
+            AdaptativeTextField(
+              label: 'Título',
+              onSubmit: (_) => _submitForm,
+              keyboardType: TextInputType.text,
             ),
             SizedBox(height: 20),
-            TextField(
-              controller: _valueController,
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
-              onSubmitted: (_) => _submitForm(),
-              decoration: InputDecoration(
-                labelText: 'Valor (R\$)',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
+            AdaptativeTextField(
+              label: 'Valor (R\$)',
+              onSubmit: (_) => _submitForm,
+              keyboardType: TextInputType.number,
             ),
             SizedBox(height: 20),
-            Container(
-              height: 60,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Expanded(
-                    child: Text(
-                      // ignore: unnecessary_null_comparison
-                      _selectedDate == null
-                          // ignore: dead_code
-                          ? 'Nenhuma data selecionada!'
-                          : 'Data Selecionada: ${DateFormat('dd/MM/y').format(_selectedDate!)}',
-                    ),
-                  ),
-                  TextButton(
-                    style: TextButton.styleFrom(
-                      foregroundColor: Theme.of(context).primaryColor,
-                      textStyle: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    onPressed: _showDatePicker,
-                    child: Text('Selecionar data'),
-                  ),
-                ],
-              ),
+            AdaptativeDatePicker(
+              selectedDate: _selectedDate,
+              onDateChanged: (newDate) {
+                setState(() {
+                  _selectedDate = newDate;
+                });
+              },
             ),
             SizedBox(height: 40),
             SizedBox(
               width: double.infinity,
               height: 50,
-              child: ElevatedButton(
+              child: AdaptativeButton(
                 onPressed: _submitForm,
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                ),
-                child: Text(
-                  'Nova Transação',
-                  style: TextStyle(fontSize: 16),
-                ),
+                label: 'Nova Transação',
               ),
             ),
           ],
