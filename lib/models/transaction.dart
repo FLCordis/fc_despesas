@@ -7,7 +7,7 @@ class Transaction {
   final DateTime date;   // Data quando a transação foi realizada
 
   // Construtor da classe - todos os campos são obrigatórios (required)
-  Transaction({
+  const Transaction({
     required this.id,    // ID deve ser fornecido
     required this.title, // Título deve ser fornecido
     required this.value, // Valor deve ser fornecido

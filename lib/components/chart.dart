@@ -109,7 +109,7 @@ class Chart extends StatelessWidget {
 
     return Card(
       elevation: 6, // Sombra do cartão
-      margin: EdgeInsets.all(20), // Margem externa
+      margin: const EdgeInsets.all(20), // Margem externa
       child: Padding(
         padding: const EdgeInsets.all(10), // Espaçamento interno
         child: Row(

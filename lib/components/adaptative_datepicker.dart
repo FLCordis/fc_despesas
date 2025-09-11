@@ -23,7 +23,7 @@ class AdaptativeDatePicker extends StatelessWidget {
     showDatePicker(
       context: context,
       initialDate: DateTime.now(),                              // Data inicial: hoje
-      firstDate: DateTime.now().subtract(Duration(days: 360)), // Data mínima: 360 dias atrás
+      firstDate: DateTime.now().subtract(const Duration(days: 360)), // Data mínima: 360 dias atrás
       lastDate: DateTime.now(),                                 // Data máxima: hoje
     ).then((pickedDate) {
       // Se o usuário cancelou a seleção, pickedDate será null
@@ -41,17 +41,17 @@ class AdaptativeDatePicker extends StatelessWidget {
   Widget build(BuildContext context) {
     // Verifica se é iOS ou Android e retorna o componente apropriado
     return Platform.isIOS
-        ? Container( // Versão iOS: roda de seleção
+        ? SizedBox( // Versão iOS: roda de seleção
             height: 150, // Altura fixa para a roda
             child: CupertinoDatePicker(
               mode: CupertinoDatePickerMode.date,                      // Modo: apenas data (sem hora)
               initialDateTime: DateTime.now(),                         // Data inicial: hoje
-              minimumDate: DateTime.now().subtract(Duration(days: 360)), // Data mínima: 360 dias atrás
+              minimumDate: DateTime.now().subtract(const Duration(days: 360)), // Data mínima: 360 dias atrás
               maximumDate: DateTime.now(),                             // Data máxima: hoje
               onDateTimeChanged: onDateChanged,                        // Função chamada quando muda
             ),
           )
-        : Container( // Versão Android: botão que abre modal
+        : SizedBox( // Versão Android: botão que abre modal
             height: 60, // Altura menor para o botão
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween, // Espaça os elementos
@@ -65,10 +65,10 @@ class AdaptativeDatePicker extends StatelessWidget {
                 TextButton(
                   style: TextButton.styleFrom(
                     foregroundColor: Theme.of(context).primaryColor, // Cor do tema
-                    textStyle: TextStyle(fontWeight: FontWeight.bold), // Texto em negrito
+                    textStyle: const TextStyle(fontWeight: FontWeight.bold), // Texto em negrito
                   ),
                   onPressed: () => _showDatePicker(context), // Abre o modal de calendário
-                  child: Text('Selecionar data'),
+                  child: const Text('Selecionar data'),
                 ),
               ],
             ),

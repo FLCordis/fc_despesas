@@ -17,7 +17,7 @@ import 'components/transaction_list.dart'; // Lista de transações
 import 'models/transaction.dart'; // Modelo de dados da transação
 
 // Função principal que inicia o aplicativo
-void main() => runApp(ExpensesApp());
+void main() => runApp(const ExpensesApp());
 
 // Classe principal do aplicativo - define as configurações gerais
 class ExpensesApp extends StatelessWidget {
@@ -37,7 +37,7 @@ class ExpensesApp extends StatelessWidget {
       ],
       supportedLocales: const [Locale('pt', 'BR'), Locale('en', 'US')], // Idiomas suportados
       
-      home: MyHomePage(), // Tela inicial do aplicativo
+      home: const MyHomePage(), // Tela inicial do aplicativo
       
       // Tema visual do aplicativo
       theme: ThemeData(
@@ -48,7 +48,7 @@ class ExpensesApp extends StatelessWidget {
         
         // Configuração dos textos
         textTheme: ThemeData.light().textTheme.copyWith(
-          titleMedium: TextStyle(
+          titleMedium: const TextStyle(
             fontFamily: 'OpenSans',     // Fonte para títulos
             fontSize: 18,               // Tamanho da fonte
             fontWeight: FontWeight.bold, // Negrito
@@ -57,8 +57,8 @@ class ExpensesApp extends StatelessWidget {
         ),
         
         // Configuração da barra superior (AppBar)
-        appBarTheme: AppBarTheme(
-          titleTextStyle: ThemeData.light().textTheme.titleMedium!.copyWith(
+        appBarTheme: const AppBarTheme(
+          titleTextStyle: TextStyle(
             fontFamily: 'OpenSans',
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -71,7 +71,7 @@ class ExpensesApp extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             foregroundColor: Colors.white,    // Texto branco
             backgroundColor: Colors.purple[800], // Fundo roxo escuro
-            textStyle: TextStyle(fontWeight: FontWeight.bold), // Texto em negrito
+            textStyle: const TextStyle(fontWeight: FontWeight.bold), // Texto em negrito
           ),
         ),
       ),
@@ -99,7 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
   // Usado para mostrar no gráfico apenas dados recentes
   List<Transaction> get _recentTransactions {
     return _transactions.where((tr) {
-      return tr.date.isAfter(DateTime.now().subtract(Duration(days: 7)));
+      return tr.date.isAfter(DateTime.now().subtract(const Duration(days: 7)));
     }).toList();
   }
 
@@ -146,7 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
       print('Erro ao abrir URL: $e');
       // Mostra uma mensagem de erro para o usuário na parte inferior da tela
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Não foi possível abrir o link'))
+        const SnackBar(content: Text('Não foi possível abrir o link'))
       );
     }
   }
@@ -157,24 +157,24 @@ class _MyHomePageState extends State<MyHomePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Sobre o App'),
+          title: const Text('Sobre o App'),
           content: Column(
             mainAxisSize: MainAxisSize.min, // Ocupa apenas o espaço necessário
             crossAxisAlignment: CrossAxisAlignment.start, // Alinha à esquerda
             children: [
-              Text(
+              const Text(
                 'Despesas Pessoais FC',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
-              SizedBox(height: 8), // Espaçamento vertical
-              Text('Desenvolvido por Flávio Cordis'),
-              SizedBox(height: 4),
+              const SizedBox(height: 8), // Espaçamento vertical
+              const Text('Desenvolvido por Flávio Cordis'),
+              const SizedBox(height: 4),
               // Link clicável para o GitHub
               GestureDetector(
                 onTap: () {
                   _launchURL('http://github.com/flcordis'); // Abre o GitHub
                 },
-                child: Text(
+                child: const Text(
                   'GitHub/FLCordis',
                   style: TextStyle(
                     color: Colors.blue,              // Cor azul para indicar link
@@ -182,15 +182,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
               ),
-              SizedBox(height: 8),
-              Text('Copyright © 2025'),
+              const SizedBox(height: 8),
+              const Text('Copyright © 2025'),
             ],
           ),
           actions: [
             // Botão para fechar o diálogo
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text('Fechar'),
+              child: const Text('Fechar'),
             ),
           ],
         );
@@ -248,14 +248,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
     final PreferredSizeWidget appBar = Platform.isIOS
         ? CupertinoNavigationBar(
-            middle: Text(
+            middle: const Text(
               'Despesas Pessoais FC',
               textScaler: TextScaler.linear(1.0),
             ),
             trailing: Row(mainAxisSize: MainAxisSize.min, children: actions),
           )
         : AppBar(
-            title: Text(
+            title: const Text(
               'Despesas Pessoais FC',
               textScaler: TextScaler.linear(1.0),
             ),
@@ -310,7 +310,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Platform.isIOS
         ? CupertinoPageScaffold(
             navigationBar: CupertinoNavigationBar(
-              middle: Text('Despesas Pessoais'),
+              middle: const Text('Despesas Pessoais'),
               trailing: Row(mainAxisSize: MainAxisSize.min, children: actions),
             ),
             child: bodyPage,
@@ -323,8 +323,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     onPressed: () => _openTransactionFormModal(context),
                     backgroundColor: Theme.of(context).highlightColor,
                     foregroundColor: Colors.white,
-                    label: Text('Adicionar'),
-                    icon: Icon(Icons.add),
+                    label: const Text('Adicionar'),
+                    icon: const Icon(Icons.add),
                   )
                 : null,
             floatingActionButtonLocation:

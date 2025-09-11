@@ -23,14 +23,14 @@ class ChartBar extends StatelessWidget {
         return Column(
           children: <Widget>[
             // Área superior: mostra o valor gasto (15% da altura)
-            Container(
+            SizedBox(
               height: constraints.maxHeight * 0.15,
               child: FittedBox(child: Text(value.toStringAsFixed(2))), // Valor com 2 casas decimais
             ),
             SizedBox(height: constraints.maxHeight * 0.05), // Espaçamento (5%)
             
             // Área central: a barra visual propriamente dita (60% da altura)
-            Container(
+            SizedBox(
               height: constraints.maxHeight * 0.60,
               width: 10, // Largura fixa da barra
               child: Stack(
@@ -40,7 +40,7 @@ class ChartBar extends StatelessWidget {
                   Container(
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey, width: 1), // Borda cinza
-                      color: Color.fromRGBO(220, 220, 220, 1),         // Fundo cinza claro
+                      color: const Color.fromRGBO(220, 220, 220, 1),         // Fundo cinza claro
                       borderRadius: BorderRadius.circular(5),           // Bordas arredondadas
                     ),
                   ),
@@ -60,7 +60,7 @@ class ChartBar extends StatelessWidget {
             SizedBox(height: constraints.maxHeight * 0.05), // Espaçamento (5%)
             
             // Área inferior: rótulo do dia da semana (15% da altura)
-            Container(
+            SizedBox(
               height: constraints.maxHeight * 0.15,
               child: FittedBox(child: Text(label)), // Dia da semana (SEG, TER, etc.)
             ),

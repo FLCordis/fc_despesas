@@ -38,7 +38,7 @@ class AdaptativeTextField extends StatelessWidget {
               textInputAction: textInputAction, // Ação do botão do teclado
               onSubmitted: onSubmit,           // Função chamada ao submeter
               placeholder: label,              // Texto de placeholder (iOS usa placeholder)
-              padding: EdgeInsets.symmetric(horizontal: 6, vertical: 12), // Espaçamento interno
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 12), // Espaçamento interno
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10), // Bordas arredondadas
               ),

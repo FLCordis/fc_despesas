@@ -24,13 +24,13 @@ class TransactionList extends StatelessWidget {
             builder: (ctx, constraints) {
               return Column(
                 children: <Widget>[
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Text(
                     'Nenhuma transação cadastrada!',
                     style: Theme.of(context).textTheme.titleMedium,
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Container(
                     height: constraints.maxHeight * 0.4, // 40% da altura disponível
                     child: Image.asset(
@@ -48,7 +48,7 @@ class TransactionList extends StatelessWidget {
               final tr = transactions[index];     // Transação atual
               return Card(
                 elevation: 5,                     // Sombra do cartão
-                margin: EdgeInsets.symmetric(vertical: 8, horizontal: 5), // Margens
+                margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 5), // Margens
                 child: ListTile(
                   // Círculo à esquerda com o valor da transação
                   leading: CircleAvatar(
@@ -74,12 +74,12 @@ class TransactionList extends StatelessWidget {
                           onPressed: () => onRemove(tr.id), // Chama função de remoção
                           backgroundColor: Theme.of(context).colorScheme.error, // Cor de erro
                           foregroundColor: Colors.white,
-                          label: Text('Excluir'),
-                          icon: Icon(Icons.delete),
+                          label: const Text('Excluir'),
+                          icon: const Icon(Icons.delete),
                         )
                       : IconButton( // Telas pequenas: apenas ícone
                           onPressed: () => onRemove(tr.id), // Chama função de remoção
-                          icon: Icon(Icons.delete),
+                          icon: const Icon(Icons.delete),
                           color: Theme.of(context).colorScheme.error, // Cor de erro
                         ),
                 ),

@@ -65,7 +65,7 @@ class _TransactionFormState extends State<TransactionForm> {
   Widget build(BuildContext context) {
     return SingleChildScrollView( // Permite rolar se o conteúdo for maior que a tela
       child: Padding(
-        padding: EdgeInsets.all(20), // Espaçamento interno de 20 pixels
+        padding: const EdgeInsets.all(20), // Espaçamento interno de 20 pixels
         child: Column(
           mainAxisSize: MainAxisSize.min, // Ocupa apenas o espaço necessário
           crossAxisAlignment: CrossAxisAlignment.stretch, // Estica os filhos na largura
@@ -79,7 +79,7 @@ class _TransactionFormState extends State<TransactionForm> {
               onSubmit: (_) => _valueFocusNode.requestFocus(), // Vai para o próximo campo
               keyboardType: TextInputType.text,   // Teclado de texto normal
             ),
-            SizedBox(height: 20), // Espaçamento vertical
+            const SizedBox(height: 20), // Espaçamento vertical
             
             // Campo de texto para o valor da transação
             AdaptativeTextField(
@@ -90,7 +90,7 @@ class _TransactionFormState extends State<TransactionForm> {
               onSubmit: (_) => _submitForm(),     // Submete o formulário
               keyboardType: TextInputType.number, // Teclado numérico
             ),
-            SizedBox(height: 20), // Espaçamento vertical
+            const SizedBox(height: 20), // Espaçamento vertical
             
             // Seletor de data adaptativo
             AdaptativeDatePicker(
@@ -101,7 +101,7 @@ class _TransactionFormState extends State<TransactionForm> {
                 });
               },
             ),
-            SizedBox(height: 40), // Espaçamento maior antes do botão
+            const SizedBox(height: 40), // Espaçamento maior antes do botão
             
             // Botão para submeter o formulário
             SizedBox(

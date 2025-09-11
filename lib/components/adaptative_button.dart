@@ -24,7 +24,7 @@ class AdaptativeButton extends StatelessWidget {
         ? CupertinoButton( // Botão estilo iOS
             color: Theme.of(context).primaryColor, // Usa a cor primária do tema
             onPressed: onPressed,                  // Função chamada ao pressionar
-            child: Text(label, style: TextStyle(fontSize: 16)), // Texto do botão
+            child: Text(label, style: const TextStyle(fontSize: 16)), // Texto do botão
           )
         : ElevatedButton( // Botão estilo Android (Material Design)
             style: ElevatedButton.styleFrom(
@@ -35,7 +35,7 @@ class AdaptativeButton extends StatelessWidget {
               ),
             ),
             onPressed: onPressed,                         // Função chamada ao pressionar
-            child: Text(label, style: TextStyle(fontSize: 16)), // Texto do botão
+            child: Text(label, style: const TextStyle(fontSize: 16)), // Texto do botão
           );
   }
 }
